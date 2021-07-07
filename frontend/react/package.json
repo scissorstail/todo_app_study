@@ -1,0 +1,58 @@
+{
+  "name": "project-react",
+  "version": "0.1.0",
+  "private": true,
+  "config-overrides-path": "node_modules/react-app-rewired/config-overrides.js",
+  "dependencies": {
+    "@emotion/react": "^11.1.5",
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.3",
+    "@testing-library/user-event": "^12.6.2",
+    "axios": "^0.21.1",
+    "mobx": "^6.1.5",
+    "mobx-react": "^7.1.0",
+    "mobx-react-router": "^4.1.0",
+    "normalize.css": "^8.0.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.1",
+    "tailwindcss": "^2.1.1",
+    "twin.macro": "^2.3.3",
+    "web-vitals": "^0.2.4"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "babelMacros": {
+    "twin": {
+      "config": "tailwind.config.js"
+    }
+  },
+  "devDependencies": {
+    "customize-cra": "^1.0.0",
+    "react-app-rewired": "^2.1.8",
+    "shelljs": "^0.8.4"
+  }
+}

@@ -1,0 +1,7 @@
+!logs
+logs/*
+
+!web/media
+web/media/*
+!web/static
+web/static/*

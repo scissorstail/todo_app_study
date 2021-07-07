@@ -1,0 +1,34 @@
+# Build Production
+FROM node:lts-alpine as builder
+
+ARG REACT_APP_WEB_URL
+ARG REACT_APP_API_URL
+ARG REACT_APP_MEDIA_URL
+ARG REACT_APP_TOKEN_NAME
+ENV REACT_APP_WEB_URL=$REACT_APP_WEB_URL
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+ENV REACT_APP_MEDIA_URL=$REACT_APP_MEDIA_URL
+ENV REACT_APP_TOKEN_NAME=$REACT_APP_TOKEN_NAME
+
+WORKDIR /app
+
+COPY ./frontend/react/package*.json ./
+RUN npm install
+
+COPY ./frontend/react ./
+RUN npm run build
+
+# Deploy Production
+FROM nginx:latest as deploy
+
+RUN mkdir -p /etc/nginx/conf.d
+WORKDIR /etc/nginx/conf.d
+RUN mkdir -p /web/static
+COPY --from=builder /app/build /web/static
+
+COPY ./backend/nginx/conf.d/default.conf default.conf
+COPY ./backend/nginx/web/media /media
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+STOPSIGNAL SIGTERM
+CMD ["nginx", "-g", "daemon off;"]

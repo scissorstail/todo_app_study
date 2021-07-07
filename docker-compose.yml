@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:12
+    environment:
+      - POSTGRES_DB=${APP_DB_NAME}
+      - POSTGRES_USER=${APP_DB_USER}
+      - POSTGRES_PASSWORD=${APP_DB_PASSWORD}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    restart: always
+    volumes:
+      - ./backend/postgres/pgdata/data:/var/lib/postgresql/data
+
+  django:
+    container_name: django
+    build:
+      context: .
+      dockerfile: ./backend/django/Dockerfile
+    environment:
+      - DJANGO_DEBUG=True
+      - DJANGO_DB_HOST=postgres
+      - DJANGO_DB_PORT=5432
+      - DJANGO_DB_NAME=${APP_DB_NAME}
+      - DJANGO_DB_USERNAME=${APP_DB_USER}
+      - DJANGO_DB_PASSWORD=${APP_DB_PASSWORD}
+      - DJANGO_SECRET_KEY=${APP_SECRET_KEY}
+    expose:
+      - 8000
+    ports:
+      - 8000:8000
+    restart: always
+    volumes:
+      - ./backend/django:/app
+      - ./backend/nginx/web/media:/media
+    depends_on:
+      - postgres
+
+  react:
+    stdin_open: true
+    container_name: react
+    build:
+      context: .
+      dockerfile: ./frontend/react/Dockerfile
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - REACT_APP_WEB_URL=${APP_WEB_PREFIX}:3000
+      - REACT_APP_API_URL=${APP_WEB_PREFIX}:8000
+      - REACT_APP_MEDIA_URL=${APP_WEB_PREFIX}:8000
+      - REACT_APP_TOKEN_NAME=ProjectReactToken
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    restart: always
+    volumes:
+      - ./frontend/react:/app
+      - /app/node_modules
+    depends_on:
+      - django
